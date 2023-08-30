@@ -7,18 +7,32 @@ namespace PoolCode
     {
         [SerializeField] public List<GameObject> activeObject;
         [SerializeField] private List<GameObject> inactiveObjects;
+        [SerializeField] private GameObject parent;
 
         public GameObject ActivateObject()
         {
-            int rand = Random.Range(0, inactiveObjects.Count);
-            GameObject obj = inactiveObjects[rand];
+            if (inactiveObjects.Count == 0)
+            {
+                int rand = Random.Range(0, activeObject.Count);
+                GameObject objPrefab = activeObject[rand];
 
-            inactiveObjects.Remove(obj);
-            activeObject.Add(obj);
-            
-            obj.SetActive(true);
+                GameObject obj = Instantiate(objPrefab, parent.transform, true);
+                activeObject.Add(obj);
 
-            return obj;
+                return obj;
+            }
+            else
+            {
+                int rand = Random.Range(0, inactiveObjects.Count);
+                GameObject obj = inactiveObjects[rand];
+
+                inactiveObjects.Remove(obj);
+                activeObject.Add(obj);
+
+                obj.SetActive(true);
+
+                return obj;
+            }
         }
 
         public void DisableObject(GameObject obj)
