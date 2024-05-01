@@ -1,11 +1,11 @@
 using UnityEngine;
 
-namespace Code.AdvancedInputSystem
+namespace AdvancedInputSystem
 {
     public class BaseInputSystem : MonoBehaviour
     {
         public static event OnMoveInput MoveInput;
-        public delegate void OnMoveInput(Vector3 direction);
+        public delegate void OnMoveInput(Vector2Int direction);
 
         private Vector2 _tapPosition;
         private Vector2 _swipeDelta;
@@ -21,19 +21,19 @@ namespace Code.AdvancedInputSystem
            
            if (Input.GetKeyDown(KeyCode.W))
            {
-               MoveInput(new Vector3(0, 1, 0));
+               MoveInput(new Vector2Int(0, 1));
            }
            if (Input.GetKeyDown(KeyCode.S))
            {
-               MoveInput(new Vector3(0, -1, 0));
+               MoveInput(new Vector2Int(0, -1));
            }
            if (Input.GetKeyDown(KeyCode.D))
            {
-               MoveInput(new Vector3(1, 0, 0));
+               MoveInput(new Vector2Int(1, 0));
            }
            if (Input.GetKeyDown(KeyCode.A))
            {
-               MoveInput(new Vector3(-1, 0, 0));
+               MoveInput(new Vector2Int(-1, 0));
            }
 
            if (Input.GetMouseButtonDown(0))
@@ -51,6 +51,9 @@ namespace Code.AdvancedInputSystem
 
         private void CheckSwipe()
         {
+            if(MoveInput == null)
+                return;
+            
             _swipeDelta = Vector2.zero;
 
             if (_isSwiping)
@@ -65,11 +68,11 @@ namespace Code.AdvancedInputSystem
             {
                 if (Mathf.Abs(_swipeDelta.x) > Mathf.Abs(_swipeDelta.y))
                 {
-                    MoveInput(_swipeDelta.x > 0 ? Vector3.right : Vector3.left);
+                    MoveInput(_swipeDelta.x > 0 ? Vector2Int.right : Vector2Int.left);
                 }
                 else
                 {
-                    MoveInput(_swipeDelta.y > 0 ? Vector3.up : Vector3.down);
+                    MoveInput(_swipeDelta.y > 0 ? Vector2Int.up : Vector2Int.down);
                 }
                 
                 ResetSwipe();

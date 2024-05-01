@@ -1,15 +1,34 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
+using AdvancedInputSystem;
 using UnityEngine;
 
-public class Player : MonoBehaviour
+namespace PlayerCode
 {
-    private Animator _animator;
-
-    private void Awake()
+    [RequireComponent(typeof(PlayerMovement),typeof(PlayerAnimator), typeof(PlayerInputSystem))]
+    public class Player : MonoBehaviour
     {
-        _animator = GetComponent<Animator>();
-        _animator.SetBool("Run", true);
+        private PlayerMovement _playerMovement;
+        private PlayerAnimator _playerAnimator;
+        private PlayerInputSystem _playerInputSystem;
+        
+        private void Awake()
+        {
+            _playerMovement = GetComponent<PlayerMovement>();
+            _playerAnimator = GetComponent<PlayerAnimator>();
+            _playerInputSystem = GetComponent<PlayerInputSystem>();
+            
+            _playerInputSystem.OnJump += Jump;
+        }
+
+        private void Jump()
+        {
+            _playerMovement.Jump();
+            _playerAnimator.StartJumpAnimation();
+        }
+
+        private void Down()
+        {
+            _playerMovement.Down();
+            _playerAnimator.StartDownAnimation();
+        }
     }
 }
