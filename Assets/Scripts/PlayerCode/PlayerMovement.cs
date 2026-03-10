@@ -37,7 +37,7 @@ namespace PlayerCode
 
             if (Physics.Raycast(transform.position, Vector3.down, out hit, checkDistance, ~ignoredLayer))
             {
-                _rigidbody.velocity = Vector3.zero;
+                _rigidbody.linearVelocity = Vector3.zero;
                 return true;
             }
 
