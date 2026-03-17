@@ -1,4 +1,5 @@
 using UnityEngine;
+using Runner.Core;
 
 public class ShopBootstrap : MonoBehaviour
 {
@@ -12,11 +13,24 @@ public class ShopBootstrap : MonoBehaviour
 
     public void Awake()
     {
-        InitializeData();
-
-        InitializeWallet();
-
+        TryUseSharedRuntimeData();
+        
+        if (_persistentPlayerData == null || _dataProvider == null)
+            InitializeData();
+        
+        if (_wallet == null)
+            InitializeWallet();
+        else if (_walletView != null)
+            _walletView.Initialize(_wallet);
+        
         InitializeShop();
+    }
+
+    private void TryUseSharedRuntimeData()
+    {
+        _persistentPlayerData = RunnerRuntimeContext.PersistentData;
+        _dataProvider = RunnerRuntimeContext.DataProvider;
+        _wallet = RunnerRuntimeContext.Wallet;
     }
 
     private void InitializeData()
@@ -30,8 +44,9 @@ public class ShopBootstrap : MonoBehaviour
     private void InitializeWallet()
     {
         _wallet = new Wallet(_persistentPlayerData);
-        
-        _walletView.Initialize(_wallet);
+
+        if (_walletView != null)
+            _walletView.Initialize(_wallet);
     }
 
     private void InitializeShop()

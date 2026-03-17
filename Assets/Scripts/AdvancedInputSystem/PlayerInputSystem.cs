@@ -13,6 +13,11 @@ namespace AdvancedInputSystem
             BaseInputSystem.MoveInput += OnMoveInput;
         }
 
+        private void OnDestroy()
+        {
+            BaseInputSystem.MoveInput -= OnMoveInput;
+        }
+
         private void OnMoveInput(Vector2Int directionInput)
         {
             if (directionInput.y == 1)

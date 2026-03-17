@@ -19,7 +19,7 @@ namespace AdvancedInputSystem
            if(MoveInput == null)
                 return;
            
-           if (Input.GetKeyDown(KeyCode.W))
+           if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.Space))
            {
                MoveInput(new Vector2Int(0, 1));
            }

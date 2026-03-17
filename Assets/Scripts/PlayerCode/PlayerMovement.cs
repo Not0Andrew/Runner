@@ -10,18 +10,35 @@ namespace PlayerCode
         [SerializeField] private float jumpForce;
         [SerializeField] private float checkDistance;
         [SerializeField] private LayerMask ignoredLayer;
+        [SerializeField] private Vector3 groundCheckOffset = Vector3.zero;
         
         private Rigidbody _rigidbody;
+        private bool _isGrounded;
+
+        public bool IsGrounded => _isGrounded;
+        public event Action<bool> GroundedChanged;
         
         private void Awake()
         {
             _rigidbody = GetComponent<Rigidbody>();
         }
+
+        private void FixedUpdate()
+        {
+            bool wasGrounded = _isGrounded;
+            _isGrounded = CheckGrounded();
+
+            if (wasGrounded != _isGrounded)
+                GroundedChanged?.Invoke(_isGrounded);
+        }
         
         public void Jump()
         {
-            if (CheckJump())
+            if (_isGrounded)
             {
+                var velocity = _rigidbody.linearVelocity;
+                velocity.y = 0f;
+                _rigidbody.linearVelocity = velocity;
                 _rigidbody.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
             }
         }
@@ -31,17 +48,9 @@ namespace PlayerCode
             
         }
 
-        private bool CheckJump()
+        private bool CheckGrounded()
         {
-            RaycastHit hit;
-
-            if (Physics.Raycast(transform.position, Vector3.down, out hit, checkDistance, ~ignoredLayer))
-            {
-                _rigidbody.linearVelocity = Vector3.zero;
-                return true;
-            }
-
-            return false;
+            return Physics.Raycast(transform.position + groundCheckOffset, Vector3.down, checkDistance, ~ignoredLayer);
         }
     }
 }

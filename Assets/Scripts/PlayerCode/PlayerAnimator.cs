@@ -2,10 +2,12 @@ using UnityEngine;
 
 namespace PlayerCode
 {
+    [RequireComponent(typeof(Animator))]
     public class PlayerAnimator : MonoBehaviour
     {
-        private readonly static int Run = Animator.StringToHash("Run");
-        private readonly static int Jump = Animator.StringToHash("Idle");
+        private static readonly int Run = Animator.StringToHash("Run");
+        private static readonly int Jump = Animator.StringToHash("Jump");
+        private static readonly int Grounded = Animator.StringToHash("Grounded");
         
         private Animator _animator;
 
@@ -23,11 +25,21 @@ namespace PlayerCode
         public void StartJumpAnimation()
         {
             _animator.SetBool(Run, false);
+            _animator.SetTrigger(Jump);
+            _animator.SetBool(Grounded, false);
         }
         
         public void StartDownAnimation()
         {
-            
+            _animator.SetBool(Run, false);
+        }
+
+        public void OnGroundedStateChanged(bool isGrounded)
+        {
+            _animator.SetBool(Grounded, isGrounded);
+
+            if (isGrounded)
+                StartRunAnimation();
         }
     }
 }
